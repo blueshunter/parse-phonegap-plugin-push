@@ -34,6 +34,7 @@
 @synthesize callbackId;
 @synthesize notificationCallbackId;
 @synthesize callback;
+@synthesize userId;
 
 
 - (void)unregister:(CDVInvokedUrlCommand*)command;
@@ -61,9 +62,12 @@
     id soundArg = [iosOptions objectForKey:@"sound"];
     id alertArg = [iosOptions objectForKey:@"alert"];
 
-    NSMutableDictionary* parseKeys = [iosOptions valueForKeyPath:@"parseKeys"];
-    id appKey = [parseKeys objectForKey:@"applicationKey"];
-    id iosSdkKey = [parseKeys objectForKey:@"iosSdkKey"];
+    NSMutableDictionary* parseKeys = [options valueForKeyPath:@"parseKeys"];
+    id appKey = [parseKeys objectForKey:@"applicationId"];
+    id iosSdkKey = [parseKeys objectForKey:@"clientKey"];
+    userId = [PFUser objectWithoutDataWithObjectId:[options objectForKey:@"userId"]];
+    NSLog(@"UserId:%@",userId);
+    NSLog(@"APPKEY:%@",appKey);
     
     if (([appKey isKindOfClass:[NSString class]] && [iosSdkKey isKindOfClass:[NSString class]]))
     {
@@ -127,11 +131,16 @@
 - (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     [currentInstallation setDeviceTokenFromData:deviceToken];
-//    PFUser *currentUser = [PFUser currentUser];
-//	if (currentUser) {
-//    	currentInstallation[@"user"] = [PFUser currentUser];
-//	} 
-    [currentInstallation saveInBackground];
+    currentInstallation[@"user"] = userId;
+    NSLog(@"InstallationId:%@",currentInstallation.installationId);
+    [currentInstallation saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (succeeded) {
+            NSLog(@"Saved");
+        } else {
+            NSLog(@"Error %@",error);
+        }
+    }];
+
 
     
     NSLog(@"Push Plugin register success: %@", deviceToken);
