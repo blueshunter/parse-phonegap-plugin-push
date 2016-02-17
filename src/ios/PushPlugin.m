@@ -127,8 +127,12 @@
 - (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     [currentInstallation setDeviceTokenFromData:deviceToken];
-    [currentInstallation setDeviceTokenFromData:deviceToken];
+    PFUser *currentUser = [PFUser currentUser];
+	if (currentUser) {
+    	currentInstallation[@"user"] = [PFUser currentUser];
+	} 
     [currentInstallation saveInBackground];
+
     
     NSLog(@"Push Plugin register success: %@", deviceToken);
     
