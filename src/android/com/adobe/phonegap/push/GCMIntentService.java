@@ -32,6 +32,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
+import com.parse.ParseInstallation;
 
 @SuppressLint("NewApi")
 public class GCMIntentService extends GCMBaseIntentService implements PushConstants {
@@ -68,6 +69,8 @@ public class GCMIntentService extends GCMBaseIntentService implements PushConsta
             Log.v(LOG_TAG, "onRegistered: " + json.toString());
 
             PushPlugin.sendEvent( json );
+
+            ParseInstallation.getCurrentInstallation().saveInBackground();
         }
         catch(JSONException e) {
             // No message to the user is sent, JSON failed
