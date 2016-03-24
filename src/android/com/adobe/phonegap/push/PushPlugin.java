@@ -1,5 +1,7 @@
 package com.adobe.phonegap.push;
 
+import android.app.Activity;
+import android.app.Application;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -16,7 +18,7 @@ import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
+import com.parse.Parse;
 import java.util.Iterator;
 
 public class PushPlugin extends CordovaPlugin implements PushConstants {
@@ -59,7 +61,13 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
                 Log.v(LOG_TAG, "execute: senderID=" + senderID);
 
+                String appID = jo.getString("applicationKey");
+                String clientID = jo.getString("clientKey");
+
+                Parse.initialize(getApplicationContext(), appID, clientID);
+
                 GCMRegistrar.register(getApplicationContext(), senderID);
+
                 result = true;
             } catch (JSONException e) {
                 Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
