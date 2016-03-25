@@ -127,10 +127,10 @@
 - (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     [currentInstallation setDeviceTokenFromData:deviceToken];
-//    PFUser *currentUser = [PFUser currentUser];
-//	if (currentUser) {
-//    	currentInstallation[@"user"] = [PFUser currentUser];
-//	} 
+    PFUser *currentUser = [PFUser currentUser];
+	if (currentUser) {
+    	currentInstallation[@"user"] = [PFUser currentUser];
+	} 
     [currentInstallation saveInBackground];
 
     
@@ -189,7 +189,6 @@
     // Send result to trigger 'registration' event but keep callback
     NSMutableDictionary* message = [NSMutableDictionary dictionaryWithCapacity:1];
     [message setObject:token forKey:@"registrationId"];
-    [message setObject:currentInstallation.installationId forKey:@"installationId"];
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:message];
     [pluginResult setKeepCallbackAsBool:YES];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
