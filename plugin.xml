@@ -55,7 +55,7 @@
 
 			<!--<activity android:name="com.adobe.phonegap.push.PushHandlerActivity" android:exported="true"/>-->
 			<service android:name="com.parse.PushService" />
-			<receiver android:name="com.parse.ParsePushBroadcastReceiver" android:exported=false>
+			<receiver android:name="com.parse.ParsePushBroadcastReceiver" android:exported="false">
 			  <intent-filter>
 			     <action android:name="com.parse.push.intent.RECEIVE" />
 			     <action android:name="com.parse.push.intent.OPEN" />
