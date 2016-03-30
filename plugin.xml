@@ -53,16 +53,19 @@
 				Make sure that PushService and ParsePushBroadcastReceiver are declared as children of the <application> element:
 			-->
 
-			<!--<activity android:name="com.adobe.phonegap.push.PushHandlerActivity" android:exported="true"/>-->
+			<activity android:name="com.adobe.phonegap.push.PushHandlerActivity" android:exported="true"/>
 			<service android:name="com.parse.PushService" />
-			<receiver android:name="com.parse.ParsePushBroadcastReceiver" android:exported="false">
+			<receiver android:name="com.adobe.phonegap.push.CordovaParsePushBroadcastReceiver" android:exported="false">
 			  <intent-filter>
 			     <action android:name="com.parse.push.intent.RECEIVE" />
 			     <action android:name="com.parse.push.intent.OPEN" />
 			     <action android:name="com.parse.push.intent.DELETE" />
+			     <action android:name="android.intent.action.BOOT_COMPLETED" />
+                 <action android:name="android.intent.action.USER_PRESENT" />
+                 <category android:name="$PACKAGE_NAME" />
 			   </intent-filter>
 			</receiver>
-			<!--
+			
 			<receiver android:name="com.adobe.phonegap.push.CordovaGCMBroadcastReceiver" android:permission="com.google.android.c2dm.permission.SEND" >
 				<intent-filter>
 					
@@ -75,7 +78,7 @@
 				</intent-filter>
 			</receiver>
 			<<service android:name="com.adobe.phonegap.push.GCMIntentService" />
-			-->
+			
 		</config-file>
 
 		<framework src="com.android.support:support-v13:23+" />
@@ -83,6 +86,7 @@
 		<source-file src="src/android/libs/bolts-tasks-1.4.0.jar" target-dir="libs/" />
 		<source-file src="src/android/libs/Parse-1.13.0.jar" target-dir="libs/" />
 		<source-file src="src/android/libs/gcm.jar" target-dir="libs/" />
+		<source-file src="src/android/com/adobe/phonegap/push/CordovaParsePushBroadcastReceiver.java" target-dir="src/com/adobe/phonegap/push/" />
 		<source-file src="src/android/com/adobe/phonegap/push/CordovaGCMBroadcastReceiver.java" target-dir="src/com/adobe/phonegap/push/" />
 		<source-file src="src/android/com/adobe/phonegap/push/GCMIntentService.java" target-dir="src/com/adobe/phonegap/push/" />
 		<source-file src="src/android/com/adobe/phonegap/push/PushConstants.java" target-dir="src/com/adobe/phonegap/push/" />
