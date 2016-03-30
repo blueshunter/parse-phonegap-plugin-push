@@ -1,9 +1,8 @@
 package com.adobe.phonegap.push;
 
 import android.content.Context;
-
-import com.google.android.gcm.GCMBroadcastReceiver;
-import static com.google.android.gcm.GCMConstants.DEFAULT_INTENT_SERVICE_CLASS_NAME;
+import android.content.Intent;
+import com.parse.ParsePushBroadcastReceiver;
 
 /*
  * Implementation of GCMBroadcastReceiver that hard-wires the intent service to be 
