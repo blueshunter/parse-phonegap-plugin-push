@@ -60,20 +60,6 @@
 
 		<config-file target="AndroidManifest.xml" parent="/manifest/application">
 
-			<!--
-				Make sure that PushService and ParsePushBroadcastReceiver are declared as children of the <application> element:
-			-->
-			<!--
-			<activity android:name="com.adobe.phonegap.push.PushHandlerActivity" android:exported="true"/>
-			<service android:name="com.parse.PushService" />
-	        <receiver android:name="com.parse.ParseBroadcastReceiver">
-	            <intent-filter>
-	                <action android:name="android.intent.action.BOOT_COMPLETED" />
-	                <action android:name="android.intent.action.USER_PRESENT" />
-	            </intent-filter>
-	        </receiver>
--->
-
 			<receiver android:name="com.adobe.phonegap.push.CordovaParsePushBroadcastReceiver" android:exported="false">
 			  <intent-filter>
 			  	 <action android:name="android.intent.action.BOOT_COMPLETED" />

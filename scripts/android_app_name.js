@@ -17,7 +17,7 @@ module.exports = function(context) {
         throw new Error('Unable to find AndroidManifest.xml: ' + err);
       }
 
-      var appClass = 'CordovaPushApplication';
+      var appClass = 'com.adobe.phonegap.push.CordovaPushApplication';
 
       if (data.indexOf(appClass) == -1) {
 
