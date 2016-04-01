@@ -8,8 +8,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.google.android.gcm.GCMRegistrar;
-
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
@@ -45,66 +43,8 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
         Log.v(LOG_TAG, "execute: action=" + action);
 
-        if (INITIALIZE.equals(action)) {
-            pushContext = callbackContext;
-            JSONObject jo = null;
+    if (UNREGISTER.equals(action)) {
 
-            Log.v(LOG_TAG, "execute: data=" + data.toString());
-
-            try {
-                jo = data.getJSONObject(0).getJSONObject(ANDROID);
-
-                gWebView = this.webView;
-                Log.v(LOG_TAG, "execute: jo=" + jo.toString());
-
-                String senderID = jo.getString(SENDER_ID);
-
-                Log.v(LOG_TAG, "execute: senderID=" + senderID);
-
-                String appID = jo.getString("applicationKey");
-                String clientID = jo.getString("clientKey");
-
-                Parse.initialize(getApplicationContext(), appID, clientID);
-
-                //GCMRegistrar.register(getApplicationContext(), senderID);//depreceated
-
-                PushService.subscribe(this, "", PushHandlerActivity.class);
-
-                result = true;
-            } catch (JSONException e) {
-                Log.e(LOG_TAG, "execute: Got JSON Exception " + e.getMessage());
-                result = false;
-                callbackContext.error(e.getMessage());
-            }
-
-            if (jo != null) {
-                SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
-                try {
-                    editor.putString(ICON, jo.getString(ICON));
-                } catch (JSONException e) {
-                    Log.d(LOG_TAG, "no icon option");
-                }
-                try {
-                    editor.putString(ICON_COLOR, jo.getString(ICON_COLOR));
-                } catch (JSONException e) {
-                    Log.d(LOG_TAG, "no iconColor option");
-                }
-                editor.putBoolean(SOUND, jo.optBoolean(SOUND, true));
-                editor.putBoolean(VIBRATE, jo.optBoolean(VIBRATE, true));
-                editor.putBoolean(CLEAR_NOTIFICATIONS, jo.optBoolean(CLEAR_NOTIFICATIONS, true));
-                editor.commit();
-            }
-
-            if ( gCachedExtras != null) {
-                Log.v(LOG_TAG, "sending cached extras");
-                sendExtras(gCachedExtras);
-                gCachedExtras = null;
-            }
-
-        } else if (UNREGISTER.equals(action)) {
-
-            GCMRegistrar.unregister(getApplicationContext());
 
             Log.v(LOG_TAG, "UNREGISTER");
             result = true;
