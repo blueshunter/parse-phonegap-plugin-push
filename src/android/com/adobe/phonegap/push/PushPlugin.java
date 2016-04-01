@@ -66,7 +66,9 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
                 Parse.initialize(getApplicationContext(), appID, clientID);
 
-                GCMRegistrar.register(getApplicationContext(), senderID);
+                //GCMRegistrar.register(getApplicationContext(), senderID);//depreceated
+
+                PushService.subscribe(this, "", PushHandlerActivity.class);
 
                 result = true;
             } catch (JSONException e) {
