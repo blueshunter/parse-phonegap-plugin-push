@@ -78,6 +78,9 @@
 					<category android:name="$PACKAGE_NAME" />
 				</intent-filter>
 			</receiver>
+			
+			<activity android:name="com.adobe.phonegap.push.PushHandlerActivity" android:exported="true"/>
+			<service android:name="com.adobe.phonegap.push.GCMIntentService" />
 		</config-file>
 
 		<source-file src="src/android/libs/Parse-1.13.0.jar" target-dir="libs/" />
@@ -87,6 +90,10 @@
 		<source-file src="src/android/com/adobe/phonegap/push/PushConstants.java" target-dir="src/com/adobe/phonegap/push/" />
 
 		<source-file src="src/android/com/adobe/phonegap/push/PushPlugin.java" target-dir="src/com/adobe/phonegap/push/" />
+
+		<source-file src="src/android/com/adobe/phonegap/push/GCMIntentService.java" target-dir="src/com/adobe/phonegap/push/" />
+
+		<source-file src="src/android/com/adobe/phonegap/push/PushHandlerActivity.java" target-dir="src/com/adobe/phonegap/push/" />
 
 	</platform>
 

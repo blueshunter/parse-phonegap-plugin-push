@@ -33,7 +33,7 @@ var PushNotification = function(options) {
     var success = function(result) {
         if (result && typeof result.registrationId !== 'undefined') {
             that.emit('registration', result);
-        } else if (result && typeof result.callback !== 'undefined') {
+        } else if (result && typeof result.callback !== 'undefined' && typeof result.additionalData.callback !== 'undefined') {
             var executeFunctionByName = function(functionName, context /*, args */) {
                 var args = Array.prototype.slice.call(arguments, 2);
                 var namespaces = functionName.split(".");
@@ -82,6 +82,23 @@ PushNotification.prototype.unregister = function(successCallback, errorCallback,
     exec(successCallback, errorCallback, "PushNotification", "unregister", [options]);
 };
 
+PushNotification.prototype.register = function(successCallback, errorCallback, options) {
+
+    if (errorCallback == null) { errorCallback = function() {}}
+
+    if (typeof errorCallback != "function")  {
+        console.log("PushNotification.register failure parameter not a function");
+        return
+    }
+
+    if (typeof successCallback != "function") {
+        console.log("PushNotification.register  success callback parameter must be a function");
+        return
+    }
+
+    exec(successCallback, errorCallback, "PushNotification", "register", [options]);
+};
+
 /**
  * Call this to set the application icon badge
  */
@@ -116,8 +133,26 @@ PushNotification.prototype.setApplicationIconBadgeNumber = function(successCallb
  */
 
 PushNotification.prototype.on = function(eventName, callback) {
+
     if (this._handlers.hasOwnProperty(eventName)) {
+
+        if(eventName === "registration"){
+
+            this.register(function(success){
+
+                console.log("succes to register");
+
+            },function(error){
+
+                console.log("fail to register");
+                this.emit('error', "fail to register");
+
+            });
+
+         }
+
         this._handlers[eventName].push(callback);
+
     }
 };
 

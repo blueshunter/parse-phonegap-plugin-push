@@ -28,6 +28,8 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
     private static Bundle gCachedExtras = null;
     private static boolean gForeground = false;
 
+    Boolean isRegistered;
+
     /**
      * Gets the application context from cordova's main activity.
      * @return the application context
@@ -43,13 +45,24 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
         Log.v(LOG_TAG, "execute: action=" + action);
 
-    if (UNREGISTER.equals(action)) {
-
+        if (UNREGISTER.equals(action)) {
 
             Log.v(LOG_TAG, "UNREGISTER");
             result = true;
             callbackContext.success();
-        } else {
+            f(isRegistered){
+                isRegistered != isRegistered;
+            }
+        } 
+        else if(action.equals("REGISTER")){
+
+            if(isRegistered == false){
+                isRegistered != isRegistered;
+            }
+            
+        }
+        else {
+
             result = false;
             Log.e(LOG_TAG, "Invalid action : " + action);
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.INVALID_ACTION));
@@ -58,7 +71,9 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         return result;
     }
 
+
     public static void sendEvent(JSONObject _json) {
+
         PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, _json);
         pluginResult.setKeepCallback(true);
         pushContext.sendPluginResult(pluginResult);
