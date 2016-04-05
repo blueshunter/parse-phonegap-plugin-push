@@ -1,7 +1,5 @@
 package com.adobe.phonegap.push;
 
-import android.app.Activity;
-import android.app.Application;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -16,7 +14,7 @@ import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import com.parse.Parse;
+
 import java.util.Iterator;
 
 public class PushPlugin extends CordovaPlugin implements PushConstants {
@@ -28,7 +26,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
     private static Bundle gCachedExtras = null;
     private static boolean gForeground = false;
 
-    Boolean isRegistered;
+    static Boolean isRegistered;
 
     /**
      * Gets the application context from cordova's main activity.
@@ -50,14 +48,14 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
             Log.v(LOG_TAG, "UNREGISTER");
             result = true;
             callbackContext.success();
-            f(isRegistered){
-                isRegistered != isRegistered;
+            if(isRegistered){
+                isRegistered = !isRegistered;
             }
         } 
         else if(action.equals("REGISTER")){
 
             if(isRegistered == false){
-                isRegistered != isRegistered;
+                isRegistered = !isRegistered;
             }
             
         }

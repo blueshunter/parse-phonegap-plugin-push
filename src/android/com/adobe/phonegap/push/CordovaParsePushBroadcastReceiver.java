@@ -16,7 +16,12 @@ public class CordovaParsePushBroadcastReceiver extends ParsePushBroadcastReceive
 
     @Override
     protected void onPushReceive(Context context, Intent intent) {
-        super.onPushReceive(context, intent);
+
+    	if(PushPlugin.isRegistered){
+    		 super.onPushReceive(context, intent);
+    		 Toast.makeText(context, "this is not shown"     , Toast.LENGTH_LONG);
+    	}
+       
 
         
     }
