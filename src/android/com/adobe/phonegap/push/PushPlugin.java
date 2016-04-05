@@ -52,16 +52,18 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
             Log.v(LOG_TAG, "UNREGISTER");
             result = true;
-            callbackContext.success();
+            
             if(isRegistered){
                 isRegistered = !isRegistered;
             }
+            callbackContext.success();
         } 
         else if(action.equals("REGISTER")){
 
             if(isRegistered == false){
                 isRegistered = !isRegistered;
             }
+            callbackContext.success();
             
         }
         else {
