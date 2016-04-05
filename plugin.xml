@@ -75,7 +75,6 @@
 		<source-file src="src/android/libs/Parse-1.13.0.jar" target-dir="libs/" />
 		<source-file src="src/android/libs/bolts-tasks-1.4.0.jar" target-dir="libs/" />
 
-		<source-file src="src/android/com/adobe/phonegap/push/CordovaParsePushBroadcastReceiver.java" target-dir="src/com/adobe/phonegap/push/" />
 		<source-file src="src/android/com/adobe/phonegap/push/CordovaPushApplication.java" target-dir="src/com/adobe/phonegap/push/" />
 		<source-file src="src/android/com/adobe/phonegap/push/PushConstants.java" target-dir="src/com/adobe/phonegap/push/" />
 
