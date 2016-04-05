@@ -1,3 +1,4 @@
+cordova.define("parse-phonegap-plugin-push.PushNotification", function(require, exports, module) {
 /* global cordova:false */
 
 /*!
@@ -136,21 +137,6 @@ PushNotification.prototype.on = function(eventName, callback) {
 
     if (this._handlers.hasOwnProperty(eventName)) {
 
-        if(eventName === "registration"){
-
-            this.register(function(success){
-
-                console.log("succes to register");
-
-            },function(error){
-
-                console.log("fail to register");
-                this.emit('error', "fail to register");
-
-            });
-
-         }
-
         this._handlers[eventName].push(callback);
 
     }
@@ -211,3 +197,4 @@ module.exports = {
 
     PushNotification: PushNotification
 };
+});
