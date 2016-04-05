@@ -1,10 +1,18 @@
 package com.adobe.phonegap.push;
 
+
+import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
+
+import com.parse.ParsePushBroadcastReceiver;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
@@ -14,7 +22,6 @@ import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.Iterator;
 
 public class PushPlugin extends CordovaPlugin implements PushConstants {
@@ -26,14 +33,15 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
     private static Bundle gCachedExtras = null;
     private static boolean gForeground = false;
 
-    static Boolean isRegistered;
+    ParsePushBroadcastReceiver receiver = null;
 
     /**
      * Gets the application context from cordova's main activity.
      * @return the application context
      */
-    private Context getApplicationContext() {
+    private  Context getApplicationContext() {
         return this.cordova.getActivity().getApplicationContext();
+
     }
 
     @Override
@@ -42,29 +50,83 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         boolean result = false;
 
         Log.v(LOG_TAG, "execute: action=" + action);
-
-        if (INITIALIZE.equals(action)) {
-
+        if(INITIALIZE.equals(action)){
             pushContext = callbackContext;
-            isRegistered = true;
-        } 
+
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(Intent.ACTION_BOOT_COMPLETED);
+            intentFilter.addAction(Intent.ACTION_USER_PRESENT);
+            intentFilter.addAction(ParsePushBroadcastReceiver.ACTION_PUSH_RECEIVE);
+            intentFilter.addAction(ParsePushBroadcastReceiver.ACTION_PUSH_OPEN);
+            intentFilter.addAction(ParsePushBroadcastReceiver.ACTION_PUSH_DELETE);
+
+            if(receiver == null){
+
+                receiver = new ParsePushBroadcastReceiver(){
+
+                    @Override
+                    protected void onPushReceive(Context context, Intent intent) {
+                        
+                            super.onPushReceive(context, intent);
+
+                            try {
+                                Iterator<String> it = intent.getExtras().keySet().iterator();
+                                while (it.hasNext()) {
+                                    String key = it.next();
+                                    Object value = intent.getExtras().get(key);
+
+                                    if (key.equals("com.parse.Data")) {
+                                        JSONObject obj = new JSONObject((String) value);
+
+                                        String message = obj.getString("alert");
+                                        if (message != null && message.length() > 0) {
+
+                                            //Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+
+                                            new AlertDialog.Builder(context)
+                                                    .setTitle("URCA")
+                                                    .setMessage(message)
+                                                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            // continue with delete
+                                                        }
+                                                    })
+                                                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            // do nothing
+                                                        }
+                                                    })
+                                                    .setIcon(android.R.drawable.ic_dialog_info)
+                                                    .show();
+
+
+                                        }
+                                    }
+                                }
+                            } catch (JSONException e) {
+
+                            }
+
+
+
+                        }
+                    //}
+
+
+                };
+                webView.getContext().registerReceiver(receiver, intentFilter);
+            }
+
+
+        }
         else if (UNREGISTER.equals(action)) {
 
             Log.v(LOG_TAG, "UNREGISTER");
             result = true;
             
-            if(isRegistered){
-                isRegistered = !isRegistered;
-            }
+            webView.getContext().unregisterReceiver(receiver);
+            receiver = null;
             callbackContext.success();
-        } 
-        else if(action.equals("REGISTER")){
-
-            if(isRegistered == false){
-                isRegistered = !isRegistered;
-            }
-            callbackContext.success();
-            
         }
         else {
 
@@ -82,6 +144,8 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, _json);
         pluginResult.setKeepCallback(true);
         pushContext.sendPluginResult(pluginResult);
+
+
     }
 
     public static void sendError(String message) {
@@ -96,12 +160,18 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
      */
     public static void sendExtras(Bundle extras) {
         if (extras != null) {
+
+
             if (gWebView != null) {
                 sendEvent(convertBundleToJson(extras));
             } else {
                 Log.v(LOG_TAG, "sendExtras: caching extras to send at a later time.");
                 gCachedExtras = extras;
             }
+
+            //sendEvent(convertBundleToJson(extras));
+
+
         }
     }
 

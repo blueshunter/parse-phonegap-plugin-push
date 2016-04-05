@@ -61,7 +61,7 @@
 		<config-file target="AndroidManifest.xml" parent="/manifest/application">
 
 			<service android:name="com.parse.PushService" />
-			<receiver android:name="com.adobe.phonegap.push.CordovaParsePushBroadcastReceiver" android:exported="false">
+			<receiver android:name="com.parse.ParsePushBroadcastReceiver" android:exported="false">
 			  <intent-filter>
 			  	 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.USER_PRESENT" />
