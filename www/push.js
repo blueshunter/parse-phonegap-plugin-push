@@ -14,13 +14,6 @@ var PushNotification = function() {
         'error': []
     };
 
-    // require options parameter
-    if (typeof options === 'undefined') {
-        throw new Error('The options argument is required.');
-    }
-
-    // store the options to this object instance
-    this.options = options;
 
     // triggered on registration and notification
     var that = this;
