@@ -59,10 +59,10 @@
 		<config-file target="AndroidManifest.xml" parent="/manifest/application">
 
 			<service android:name="com.parse.PushService" />
-			<receiver android:name="com.parse.ParsePushBroadcastReceiver" android:exported="false">
+			<receiver android:name="com.adobe.phonegap.push.ParseBroadCastReceiver" android:exported="false">
 			  <intent-filter>
 			  	 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.USER_PRESENT" />
+                 <action android:name="android.intent.action.USER_PRESENT" />
 			     <action android:name="com.parse.push.intent.RECEIVE" />
 			     <action android:name="com.parse.push.intent.OPEN" />
 			     <action android:name="com.parse.push.intent.DELETE" />
@@ -87,6 +87,7 @@
 
 		<source-file src="src/android/com/adobe/phonegap/push/PushPlugin.java" target-dir="src/com/adobe/phonegap/push/" />
 
+		<source-file src="src/android/com/adobe/phonegap/push/ParseBroadCastReceiver.java" target-dir="src/com/adobe/phonegap/push/" />
 
 	</platform>
 
