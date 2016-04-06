@@ -47,23 +47,15 @@
 - (void)init:(CDVInvokedUrlCommand*)command;
 {
     NSLog(@"Push Plugin register called");
-    self.callbackId = command.callbackId;
     
-    NSMutableDictionary* options = [command.arguments objectAtIndex:0];
-    NSMutableDictionary* iosOptions = [options objectForKey:@"ios"];
     
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
     UIUserNotificationType UserNotificationTypes = UIUserNotificationTypeNone;
 #endif
     UIRemoteNotificationType notificationTypes = UIRemoteNotificationTypeNone;
     
-    id badgeArg = [iosOptions objectForKey:@"badge"];
-    id soundArg = [iosOptions objectForKey:@"sound"];
-    id alertArg = [iosOptions objectForKey:@"alert"];
-
-    NSMutableDictionary* parseKeys = [iosOptions valueForKeyPath:@"parseKeys"];
-    id appKey = [parseKeys objectForKey:@"applicationKey"];
-    id iosSdkKey = [parseKeys objectForKey:@"iosSdkKey"];
+    NSString *appKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"AppID"];
+    NSString *iosSdkKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"ClientID"];
     
     if (([appKey isKindOfClass:[NSString class]] && [iosSdkKey isKindOfClass:[NSString class]]))
     {
@@ -72,29 +64,26 @@
     }
     
     
-    if (([badgeArg isKindOfClass:[NSString class]] && [badgeArg isEqualToString:@"true"]) || [badgeArg boolValue])
-    {
+
         notificationTypes |= UIRemoteNotificationTypeBadge;
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
         UserNotificationTypes |= UIUserNotificationTypeBadge;
 #endif
-    }
     
-    if (([soundArg isKindOfClass:[NSString class]] && [soundArg isEqualToString:@"true"]) || [soundArg boolValue])
-    {
+    
+
         notificationTypes |= UIRemoteNotificationTypeSound;
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
         UserNotificationTypes |= UIUserNotificationTypeSound;
 #endif
-    }
     
-    if (([alertArg isKindOfClass:[NSString class]] && [alertArg isEqualToString:@"true"]) || [alertArg boolValue])
-    {
+    
+
         notificationTypes |= UIRemoteNotificationTypeAlert;
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
         UserNotificationTypes |= UIUserNotificationTypeAlert;
 #endif
-    }
+    
     
     notificationTypes |= UIRemoteNotificationTypeNewsstandContentAvailability;
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
@@ -125,6 +114,7 @@
 }
 
 - (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     [currentInstallation setDeviceTokenFromData:deviceToken];
     [currentInstallation setDeviceTokenFromData:deviceToken];
@@ -138,57 +128,6 @@
                        stringByReplacingOccurrencesOfString: @" " withString: @""];
     [results setValue:token forKey:@"deviceToken"];
     
-#if !TARGET_IPHONE_SIMULATOR
-    // Get Bundle Info for Remote Registration (handy if you have more than one app)
-    [results setValue:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleDisplayName"] forKey:@"appName"];
-    [results setValue:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"] forKey:@"appVersion"];
-    
-    // Check what Notifications the user has turned on.  We registered for all three, but they may have manually disabled some or all of them.
-#define SYSTEM_VERSION_LESS_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
-    
-    NSUInteger rntypes;
-    if (!SYSTEM_VERSION_LESS_THAN(@"8.0")) {
-        rntypes = [[[UIApplication sharedApplication] currentUserNotificationSettings] types];
-    } else {
-        rntypes = [[UIApplication sharedApplication] enabledRemoteNotificationTypes];
-    }
-    
-    // Set the defaults to disabled unless we find otherwise...
-    NSString *pushBadge = @"disabled";
-    NSString *pushAlert = @"disabled";
-    NSString *pushSound = @"disabled";
-    
-    // Check what Registered Types are turned on. This is a bit tricky since if two are enabled, and one is off, it will return a number 2... not telling you which
-    // one is actually disabled. So we are literally checking to see if rnTypes matches what is turned on, instead of by number. The "tricky" part is that the
-    // single notification types will only match if they are the ONLY one enabled.  Likewise, when we are checking for a pair of notifications, it will only be
-    // true if those two notifications are on.  This is why the code is written this way
-    if(rntypes & UIRemoteNotificationTypeBadge){
-        pushBadge = @"enabled";
-    }
-    if(rntypes & UIRemoteNotificationTypeAlert) {
-        pushAlert = @"enabled";
-    }
-    if(rntypes & UIRemoteNotificationTypeSound) {
-        pushSound = @"enabled";
-    }
-    
-    [results setValue:pushBadge forKey:@"pushBadge"];
-    [results setValue:pushAlert forKey:@"pushAlert"];
-    [results setValue:pushSound forKey:@"pushSound"];
-    
-    // Get the users Device Model, Display Name, Token & Version Number
-    UIDevice *dev = [UIDevice currentDevice];
-    [results setValue:dev.name forKey:@"deviceName"];
-    [results setValue:dev.model forKey:@"deviceModel"];
-    [results setValue:dev.systemVersion forKey:@"deviceSystemVersion"];
-    
-    // Send result to trigger 'registration' event but keep callback
-    NSMutableDictionary* message = [NSMutableDictionary dictionaryWithCapacity:1];
-    [message setObject:token forKey:@"registrationId"];
-    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:message];
-    [pluginResult setKeepCallbackAsBool:YES];
-    [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
-#endif
 }
 
 - (void)didFailToRegisterForRemoteNotificationsWithError:(NSError *)error

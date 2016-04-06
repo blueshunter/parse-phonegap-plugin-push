@@ -21,14 +21,14 @@
 		<engine name="cordova" version=">=3.0.0" />
 	</engines>
 
+	<preference name="APP_ID" />
+    <preference name="CLIENT_KEY" />
+
 	<!-- android -->
 	<platform name="android">
 
-		<preference name="APP_ID" />
-        <preference name="CLIENT_KEY" />
-
-        <param name="APP_ID" value="123456789" />
-		<param name="APP_NAME" value="Cordova" />
+		
+>
 
 		<!-- must to referecence application when parse must be initialized -->
 		 <hook type="after_plugin_add" src="scripts/android_app_name.js" />
@@ -96,7 +96,7 @@
 		<source-file src="src/android/com/adobe/phonegap/push/ParseBroadCastReceiver.java" target-dir="src/com/adobe/phonegap/push/" />
 
 
-		<source-file src="src/android/com/adobe/phonegap/push/parseplugin.xml" target-dir="res/values" />
+		<source-file src="src/android/com/adobe/phonegap/pushparseplugin.xml" target-dir="res/values" />
         <config-file target="res/values/parseplugin.xml" parent="/*">
             <string name="parse_app_id">$APP_ID</string>
             <string name="parse_client_key">$CLIENT_KEY</string>
@@ -112,6 +112,15 @@
 				<param name="ios-package" value="PushPlugin"/>
 			</feature>
 		</config-file>
+
+		<config-file target="*-Info.plist" parent="AppID">
+            <string>$APP_ID</string>
+        </config-file>
+
+        <config-file target="*-Info.plist" parent="ClientID">
+            <string>$APP_NAME</string>
+        </config-file>
+
 
 		<source-file src="src/ios/AppDelegate+notification.m" />
 		<source-file src="src/ios/PushPlugin.m" />
