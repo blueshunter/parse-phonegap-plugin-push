@@ -34,6 +34,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
     private static boolean gForeground = false;
 
     ParseBroadCastReceiver receiver = null;
+    AlertDialog notificationAlert = null;
 
     /**
      * Gets the application context from cordova's main activity.
@@ -95,19 +96,14 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
                                             if(gForeground){
 
-                                                new AlertDialog.Builder(context)
+                                                if(notificationAlert != null && notificationAlert.isShowing()){
+                                                    notificationAlert.dismiss();
+                                                }
+
+                                                notificationAlert = new AlertDialog.Builder(context)
                                                         .setTitle(appName)
                                                         .setMessage(message)
-                                                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                                            public void onClick(DialogInterface dialog, int which) {
-                                                                // continue with delete
-                                                            }
-                                                        })
-                                                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                                                            public void onClick(DialogInterface dialog, int which) {
-                                                                // do nothing
-                                                            }
-                                                        })
+                                                        .setPositiveButton(android.R.string.yes, null)
                                                         .setIcon(android.R.drawable.ic_dialog_info)
                                                         .show();
                                             }
