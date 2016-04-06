@@ -24,6 +24,9 @@
 	<!-- android -->
 	<platform name="android">
 
+		<preference name="APP_ID" />
+        <preference name="CLIENT_KEY" />
+
 		<!-- must to referecence application when parse must be initialized -->
 		 <hook type="after_plugin_add" src="scripts/android_app_name.js" />
 

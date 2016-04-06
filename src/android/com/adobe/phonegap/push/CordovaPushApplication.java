@@ -16,9 +16,24 @@ public class CordovaPushApplication extends Application {
         super.onCreate();
 
 
+
         // Parse init
-        Parse.initialize(this, "ycd0nCVUk0DHRPjZnyPebrxKCVJqbx3KtDGnXdeJ", "hw9Py0sva2eXwcS4u1GryZxwvDdzPETkheTgyseM");
+       
+
+        Log.d("Parse Installation", "Initializing with parse_app_id: " + appId + " and parse_client_key:" + clientKey);
+
+        String appId = getStringByKey(this, "parse_app_id");
+        String clientKey = getStringByKey(this, "parse_client_key");
+
+        Parse.initialize(this, appId, clientKey);
         ParseInstallation.getCurrentInstallation().saveInBackground();
 
     }
+
+
+    private static String getStringByKey(Application app, String key) {
+        int resourceId = app.getResources().getIdentifier(key, "string", app.getPackageName());
+        return app.getString(resourceId);
+    }
+
 }
