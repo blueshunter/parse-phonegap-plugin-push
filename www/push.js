@@ -1,10 +1,3 @@
-cordova.define("parse-phonegap-plugin-push.PushNotification", function(require, exports, module) {
-/* global cordova:false */
-
-/*!
- * Module dependencies.
- */
-
 var exec = cordova.require('cordova/exec');
 
 /**
@@ -197,4 +190,4 @@ module.exports = {
 
     PushNotification: PushNotification
 };
-});
+
