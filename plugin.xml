@@ -118,7 +118,7 @@
         </config-file>
 
         <config-file target="*-Info.plist" parent="ClientID">
-            <string>$APP_NAME</string>
+            <string>$CLIENT_KEY</string>
         </config-file>
 
 
