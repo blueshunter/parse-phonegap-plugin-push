@@ -7,7 +7,7 @@ var exec = cordova.require('cordova/exec');
  * @return {PushNotification} instance that can be monitored and cancelled.
  */
 
-var PushNotification = function(options) {
+var PushNotification = function() {
     this._handlers = {
         'registration': [],
         'notification': [],
@@ -52,7 +52,7 @@ var PushNotification = function(options) {
 
     // wait at least one process tick to allow event subscriptions
     setTimeout(function() {
-        exec(success, fail, 'PushNotification', 'init', [options]);
+        exec(success, fail, 'PushNotification', 'init');
     }, 10);
 };
 
