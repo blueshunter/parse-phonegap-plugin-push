@@ -26,10 +26,6 @@
 
 	<!-- android -->
 	<platform name="android">
-
-		
->
-
 		<!-- must to referecence application when parse must be initialized -->
 		 <hook type="after_plugin_add" src="scripts/android_app_name.js" />
 
