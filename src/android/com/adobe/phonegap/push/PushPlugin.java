@@ -51,7 +51,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         boolean result = false;
 
         Log.v(LOG_TAG, "execute: action=" + action);
-        if(INITIALIZE.equals(action)){
+        if(REGISTER.equals(action)){
             pushContext = callbackContext;
 
             SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
@@ -167,26 +167,6 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         return result;
     }
 
-
-    public static void sendEvent(JSONObject _json) {
-
-        PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, _json);
-        pluginResult.setKeepCallback(true);
-        pushContext.sendPluginResult(pluginResult);
-
-
-    }
-
-    public static void sendError(String message) {
-        PluginResult pluginResult = new PluginResult(PluginResult.Status.ERROR, message);
-        pluginResult.setKeepCallback(true);
-        pushContext.sendPluginResult(pluginResult);
-    }
-
-    /*
-     * Sends the pushbundle extras to the client application.
-     * If the client application isn't currently active, it is cached for later processing.
-     */
 
 
     @Override

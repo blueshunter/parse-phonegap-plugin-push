@@ -44,7 +44,7 @@
     [self successWithMessage:@"unregistered"];
 }
 
-- (void)init:(CDVInvokedUrlCommand*)command;
+- (void)register:(CDVInvokedUrlCommand*)command;
 {
     NSLog(@"Push Plugin register called");
     
@@ -109,8 +109,7 @@
      (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
 #endif
     
-    if (notificationMessage)			// if there is a pending startup notification
-        [self notificationReceived];	// go ahead and process it
+   
 }
 
 - (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
@@ -134,102 +133,6 @@
 {
     NSLog(@"Push Plugin register failed");
     [self failWithMessage:@"" withError:error];
-}
-
-- (void)notificationReceived {
-    NSLog(@"Notification received");
-    
-    if (notificationMessage)
-    {
-        NSMutableDictionary* message = [NSMutableDictionary dictionaryWithCapacity:4];
-        NSMutableDictionary* additionalData = [NSMutableDictionary dictionaryWithCapacity:4];
-        
-        
-        for (id key in notificationMessage) {
-            if ([key isEqualToString:@"aps"]) {
-                id aps = [notificationMessage objectForKey:@"aps"];
-                
-                for(id key in aps) {
-                    NSLog(@"Push Plugin key: %@", key);
-                    id value = [aps objectForKey:key];
-                    
-                    if ([key isEqualToString:@"alert"]) {
-                        if ([value isKindOfClass:[NSDictionary class]]) {
-                            for (id messageKey in value) {
-                                id messageValue = [value objectForKey:messageKey];
-                                if ([messageKey isEqualToString:@"body"]) {
-                                    [message setObject:messageValue forKey:@"message"];
-                                } else if ([messageKey isEqualToString:@"title"]) {
-                                    [message setObject:messageValue forKey:@"title"];
-                                } else {
-                                    [additionalData setObject:messageValue forKey:messageKey];
-                                }
-                            }
-                        }
-                        else {
-                            [message setObject:value forKey:@"message"];
-                        }
-                    } else if ([key isEqualToString:@"title"]) {
-                        [message setObject:value forKey:@"title"];
-                    } else if ([key isEqualToString:@"badge"]) {
-                        [message setObject:value forKey:@"count"];
-                    } else if ([key isEqualToString:@"sound"]) {
-                        [message setObject:value forKey:@"sound"];
-                    } else if ([key isEqualToString:@"image"]) {
-                        [message setObject:value forKey:@"image"];
-                    } else {
-                        [additionalData setObject:value forKey:key];
-                    }
-                }
-            } else {
-                [additionalData setObject:[notificationMessage objectForKey:key] forKey:key];
-            }
-        }
-        
-        if (isInline) {
-            [additionalData setObject:[NSNumber numberWithBool:YES] forKey:@"foreground"];
-        } else {
-            [additionalData setObject:[NSNumber numberWithBool:NO] forKey:@"foreground"];
-        }
-        
-        [message setObject:additionalData forKey:@"additionalData"];
-        
-        // send notification message
-        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:message];
-        [pluginResult setKeepCallbackAsBool:YES];
-        [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
-        
-        self.notificationMessage = nil;
-    }
-}
-
-- (void)setApplicationIconBadgeNumber:(CDVInvokedUrlCommand *)command
-{
-    NSMutableDictionary* options = [command.arguments objectAtIndex:0];
-    int badge = [[options objectForKey:@"badge"] intValue] ?: 0;
-    
-    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:badge];
-    
-    NSString* message = [NSString stringWithFormat:@"app badge count set to %d", badge];
-    CDVPluginResult *commandResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:message];
-    [self.commandDelegate sendPluginResult:commandResult callbackId:command.callbackId];
-}
-
--(void)successWithMessage:(NSString *)message
-{
-    if (self.callbackId != nil)
-    {
-        CDVPluginResult *commandResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:message];
-        [self.commandDelegate sendPluginResult:commandResult callbackId:self.callbackId];
-    }
-}
-
--(void)failWithMessage:(NSString *)message withError:(NSError *)error
-{
-    NSString        *errorMessage = (error) ? [NSString stringWithFormat:@"%@ - %@", message, [error localizedDescription]] : message;
-    CDVPluginResult *commandResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:errorMessage];
-    
-    [self.commandDelegate sendPluginResult:commandResult callbackId:self.callbackId];
 }
 
 @end
