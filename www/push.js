@@ -9,7 +9,8 @@ var PushNotification = {
             successCallback,
             errorCallback,
             'PushNotification',
-            'register'
+            'register',
+            []
         );
     },
 
@@ -18,7 +19,8 @@ var PushNotification = {
             successCallback,
             errorCallback,
             'PushNotification',
-            'unregister'
+            'unregister',
+            []
         );
     }
 };
