@@ -54,12 +54,6 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         if(REGISTER.equals(action)){
             pushContext = callbackContext;
 
-            SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putBoolean(SOUND, true);
-            editor.putBoolean(VIBRATE, true);
-            editor.putBoolean(CLEAR_NOTIFICATIONS, true);
-            editor.commit();
 
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(Intent.ACTION_BOOT_COMPLETED);
@@ -111,8 +105,6 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
 
                                                 NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-                                                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                intent.putExtra(PUSH_BUNDLE, intent.getExtras());
 
                                                 Notification mBuilder =
                                                         new Notification.Builder(context)
@@ -145,7 +137,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                 };
                 webView.getContext().registerReceiver(receiver, intentFilter);
             }
-
+            callbackContext.success();
 
         }
         else if (UNREGISTER.equals(action)) {
@@ -180,11 +172,8 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         super.onPause(multitasking);
         gForeground = false;
 
-        SharedPreferences prefs = getApplicationContext().getSharedPreferences(COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
-        if (prefs.getBoolean(CLEAR_NOTIFICATIONS, true)) {
-            final NotificationManager notificationManager = (NotificationManager) cordova.getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.cancelAll();
-        }
+        final NotificationManager notificationManager = (NotificationManager) cordova.getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancelAll();
     }
 
     @Override
@@ -210,27 +199,5 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
         return gWebView != null;
     }
 
-    private int parseInt(String value, Bundle extras) {
-        int retval = 0;
 
-        try {
-            retval = Integer.parseInt(getString(extras, value));
-        }
-        catch(NumberFormatException e) {
-            Log.e(LOG_TAG, "Number format exception - Error parsing " + value + ": " + e.getMessage());
-        }
-        catch(Exception e) {
-            Log.e(LOG_TAG, "Number format exception - Error parsing " + value + ": " + e.getMessage());
-        }
-
-        return retval;
-    }
-
-    private String getString(Bundle extras,String key) {
-        String message = extras.getString(key);
-        if (message == null) {
-            message = extras.getString(GCM_NOTIFICATION+"."+key);
-        }
-        return message;
-    }
 }
